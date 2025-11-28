@@ -42,8 +42,8 @@ services:
 
    duke-app:
     build:
-      context: ./Docker-files/app
-      dockerfile: app.Dockerfile
+      context: ../vprofile-project
+      dockerfile: Docker-files/app/app.Dockerfile
     image: vvduth/dukeapp-server
     container_name: duke-app
     ports:

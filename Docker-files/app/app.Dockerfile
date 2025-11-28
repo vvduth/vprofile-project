@@ -1,6 +1,9 @@
 FROM maven:3.9.9-eclipse-temurin-21-jammy AS BUILD_IMAGE
-RUN git clone https://github.com/vvduth/vprofile-project.git
-RUN cd vprofile-project && git checkout docker && mvn install
+
+# Copy local source code instead of cloning
+COPY ../../ /vprofile-project
+WORKDIR /vprofile-project
+RUN mvn clean install -DskipTests
 
 FROM tomcat:10-jdk21
 
