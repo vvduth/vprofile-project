@@ -1,0 +1,66 @@
+services:
+   duke-database:
+    build:
+      context: ./Docker-files/db
+      dockerfile: db.Dockerfile
+    image: vvduth/dukeapp-db
+    container_name: duke-database
+    ports: 
+      - "3308:3306"
+    volumes:
+      - duke-database-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=dukepassword
+      - MYSQL_DATABASE=accounts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pdukepassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vprofile-network
+
+   vprocache01:
+    image: memcached
+    container_name: vprocache01
+    ports:
+      - "11211:11211"
+    networks:
+      - vprofile-network
+
+   vpromq01:
+    image: rabbitmq
+    container_name: vpromq01
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - vprofile-network
+
+   duke-app:
+    build:
+      context: ./Docker-files/app
+      dockerfile: app.Dockerfile
+    image: vvduth/dukeapp-server
+    container_name: duke-app
+    ports:
+      - "8080:8080"
+    volumes:
+      - duke-app-data:/usr/local/tomcat/webapps
+    depends_on:
+      duke-database:
+        condition: service_healthy
+    networks:
+      - vprofile-network
+    restart: on-failure:5
+    
+volumes:
+  duke-database-data: {}
+  duke-app-data: {}
+
+networks:
+  vprofile-network:
+    driver: bridge
