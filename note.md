@@ -28,6 +28,8 @@ With containers, deployments are done via images. If you package your images pro
 
 ## The Project: Containerizing a Java Application Stack
 
+![demo](image-1.png)
+
 In this project, we are going to use Docker as our container runtime environment to build images. We are containerizing a Java application stack with multiple services:
 
 - **Nginx** (Web server / Reverse proxy)
@@ -444,3 +446,4 @@ This containerization approach gives us:
 - **Reproducibility** - if it works on your laptop, it works in production
 
 The same principles can be applied to containerize almost any multi-tier application, regardless of the specific technologies involved.
+
